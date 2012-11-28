@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 
+import django
 from django.test import TestCase
 from django.core import serializers
 from django.utils import six
@@ -118,7 +119,12 @@ class MarkupWidgetTests(TestCase):
                     markup_choices_field_markup_type='nomarkup')
         a.save()
         af = ArticleForm(instance=a)
-        self.assertEquals(_to_str(af['normal_field']), '<textarea id="id_normal_field" rows="10" cols="40" name="normal_field">\r\n**normal**</textarea>')
+
+        # django >= 1.5 adds a newline
+        DJANGO_PRE_1_5 = '<textarea id="id_normal_field" rows="10" cols="40" name="normal_field">**normal**</textarea>'
+        DJANGO_1_5 = '<textarea id="id_normal_field" rows="10" cols="40" name="normal_field">\r\n**normal**</textarea>'
+        expected = DJANGO_PRE_1_5 if django.VERSION < (1, 5, 0) else DJANGO_1_5
+        self.assertEquals(_to_str(af['normal_field']), expected)
 
     def test_no_markup_type_field_if_set(self):
         'ensure that a field with non-editable markup_type set does not have a _markup_type field'
