@@ -3,6 +3,7 @@ from django.conf import settings
 from django.db import models
 from django.utils.safestring import mark_safe
 from django.utils.html import escape
+from django.utils.encoding import python_2_unicode_compatible
 
 from markupfield import widgets
 from markupfield import markup
@@ -14,6 +15,7 @@ _markup_type_field_name = lambda name: '%s_markup_type' % name
 _MARKUP_TYPES = getattr(settings, 'MARKUP_FIELD_TYPES', markup.DEFAULT_MARKUP_TYPES)
 
 
+@python_2_unicode_compatible
 class Markup(object):
 
     def __init__(self, instance, field_name, rendered_field_name,
@@ -49,7 +51,7 @@ class Markup(object):
     rendered = property(_get_rendered)
 
     # allows display via templates to work without safe filter
-    def __unicode__(self):
+    def __str__(self):
         return mark_safe(self.rendered)
 
 
