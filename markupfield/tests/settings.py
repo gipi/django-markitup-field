@@ -1,6 +1,9 @@
-
-DATABASE_ENGINE = 'sqlite3'
-DATABASE_NAME = 'markuptest.db'
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'markuptest.db'
+    }
+}
 
 import markdown
 from docutils.core import publish_parts
@@ -17,3 +20,5 @@ MARKUP_FIELD_TYPES = [
 INSTALLED_APPS = (
     'markupfield.tests',
 )
+
+SECRET_KEY = 'not-so-secret'

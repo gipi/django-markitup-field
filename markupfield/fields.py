@@ -1,7 +1,9 @@
+import django
 from django.conf import settings
 from django.db import models
 from django.utils.safestring import mark_safe
 from django.utils.html import escape
+from django.utils.encoding import python_2_unicode_compatible
 
 from markupfield import widgets
 from markupfield import markup
@@ -13,6 +15,7 @@ _markup_type_field_name = lambda name: '%s_markup_type' % name
 _MARKUP_TYPES = getattr(settings, 'MARKUP_FIELD_TYPES', markup.DEFAULT_MARKUP_TYPES)
 
 
+@python_2_unicode_compatible
 class Markup(object):
 
     def __init__(self, instance, field_name, rendered_field_name,
@@ -48,7 +51,7 @@ class Markup(object):
     rendered = property(_get_rendered)
 
     # allows display via templates to work without safe filter
-    def __unicode__(self):
+    def __str__(self):
         return mark_safe(self.rendered)
 
 
@@ -139,12 +142,15 @@ class MarkupField(models.TextField):
         setattr(model_instance, _rendered_field_name(self.attname), rendered)
         return value.raw
 
-    def get_db_prep_value(self, value):
-        # for Django 1.2+ rename this to get_prep_value
+    def get_prep_value(self, value):
         if isinstance(value, Markup):
             return value.raw
         else:
             return value
+
+    # copy get_prep_value to get_db_prep_value if pre-1.2
+    if django.VERSION < (1,2):
+        get_db_prep_value = get_prep_value
 
     def value_to_string(self, obj):
         value = self._get_val_from_obj(obj)
