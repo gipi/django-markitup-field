@@ -10,3 +10,8 @@ script: django-admin.py test --settings=markupfield.tests.settings --pythonpath=
 notifications:
     email:
         - james.p.turk@gmail.com
+
+matrix:
+    include:
+        - python: "3.2"
+          env: DJANGO_VERSION=https://www.djangoproject.com/download/1.5b1/tarball/
