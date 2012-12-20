@@ -1,15 +1,15 @@
-from __future__ import unicode_literals
-
 from django.utils.html import linebreaks, urlize
 from django.utils.functional import curry
 from django.conf import settings
 
-# build DEFAULT_MARKUP_TYPES
-DEFAULT_MARKUP_TYPES = [
-    ('html', lambda markup: markup),
-    ('plain', lambda markup: urlize(linebreaks(markup))),
-]
+# build MARKUP_FILTERS
+MARKUP_FILTERS = {
+    'text': lambda markup: urlize(linebreaks(markup)),
+    'html': lambda markup: markup,
+}
 
+
+# Pygments
 try:
     import pygments
     PYGMENTS_INSTALLED = True
@@ -34,7 +34,7 @@ try:
                 # no lexer found - use the text one instead of an exception
                 lexer = TextLexer()
             formatter = options and VARIANTS[options.keys()[0]] or DEFAULT
-            parsed = highlight('\n'.join(content), lexer, formatter)
+            parsed = highlight(u'\n'.join(content), lexer, formatter)
             return [nodes.raw('', parsed, format='html')]
         pygments_directive.arguments = (1, 0, 1)
         pygments_directive.content = 1
@@ -43,6 +43,8 @@ try:
 except ImportError:
     PYGMENTS_INSTALLED = False
 
+
+# Markdown
 try:
     import markdown
 
@@ -57,11 +59,13 @@ try:
             pass
 
     # whichever markdown_filter was available
-    DEFAULT_MARKUP_TYPES.append(('markdown', md_filter))
+    MARKUP_FILTERS['markdown'] = md_filter
 
 except ImportError:
     pass
 
+
+# ReStructured Text
 try:
     from docutils.core import publish_parts
 
@@ -74,14 +78,16 @@ try:
                               settings_overrides=overrides)
         return parts["fragment"]
 
-    DEFAULT_MARKUP_TYPES.append(('restructuredtext', render_rest))
+    MARKUP_FILTERS['restructuredtext'] = render_rest
 except ImportError:
     pass
 
+
+# Textile
 try:
     import textile
     textile_filter =curry(textile.textile, encoding='utf-8', output='utf-8')
-    DEFAULT_MARKUP_TYPES.append(('textile', textile_filter))
+    MARKUP_FILTERS['textile'] = textile_filter
 except ImportError:
     pass
 

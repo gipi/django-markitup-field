@@ -20,5 +20,3 @@ MARKUP_FIELD_TYPES = [
 INSTALLED_APPS = (
     'markupfield.tests',
 )
-
-SECRET_KEY = 'not-so-secret'

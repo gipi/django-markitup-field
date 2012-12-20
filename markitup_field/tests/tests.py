@@ -1,20 +1,11 @@
-from __future__ import unicode_literals
-
-import django
 from django.test import TestCase
 from django.core import serializers
-from django.utils import six
 from markupfield.fields import MarkupField, Markup
 from markupfield.widgets import MarkupTextarea, AdminMarkupTextareaWidget
 from markupfield.tests.models import Post, Article, Concrete
 
 from django.forms.models import modelform_factory
 ArticleForm = modelform_factory(Article)
-
-if six.PY3:
-    _to_str = str
-else:
-    _to_str = unicode
 
 class MarkupFieldTestCase(TestCase):
 
@@ -38,26 +29,26 @@ class MarkupFieldTestCase(TestCase):
         self.assertEquals(self.mp.body.rendered, '<p><strong>markdown</strong></p>')
         self.assertEquals(self.mp.body.markup_type, 'markdown')
 
-    def test_markup_str(self):
-        u = _to_str(self.rp.body.rendered)
-        self.assertEquals(u, '<p><em>ReST</em></p>\n')
+    def test_markup_unicode(self):
+        u = unicode(self.rp.body.rendered)
+        self.assertEquals(u, u'<p><em>ReST</em></p>\n')
 
     def test_from_database(self):
         " Test that data loads back from the database correctly and 'post' has the right type."
         p1 = Post.objects.get(pk=self.mp.pk)
         self.assert_(isinstance(p1.body, Markup))
-        self.assertEquals(_to_str(p1.body), '<p><strong>markdown</strong></p>')
+        self.assertEquals(unicode(p1.body), u'<p><strong>markdown</strong></p>')
 
     ## Assignment ##
     def test_body_assignment(self):
         self.rp.body = '**ReST**'
         self.rp.save()
-        self.assertEquals(_to_str(self.rp.body), '<p><strong>ReST</strong></p>\n')
+        self.assertEquals(unicode(self.rp.body), u'<p><strong>ReST</strong></p>\n')
 
     def test_raw_assignment(self):
         self.rp.body.raw = '*ReST*'
         self.rp.save()
-        self.assertEquals(_to_str(self.rp.body), '<p><em>ReST</em></p>\n')
+        self.assertEquals(unicode(self.rp.body), u'<p><em>ReST</em></p>\n')
 
     def test_rendered_assignment(self):
         def f():
@@ -68,7 +59,7 @@ class MarkupFieldTestCase(TestCase):
         self.rp.body.markup_type = 'markdown'
         self.rp.save()
         self.assertEquals(self.rp.body.markup_type, 'markdown')
-        self.assertEquals(_to_str(self.rp.body), '<p><em>ReST</em></p>')
+        self.assertEquals(unicode(self.rp.body), u'<p><em>ReST</em></p>')
 
     ## Serialization ##
 
@@ -86,12 +77,12 @@ class MarkupFieldTestCase(TestCase):
     def test_escape_html(self):
         # the rendered string has been escaped
         self.assertEquals(self.xss_post.comment.raw, self.xss_str)
-        self.assertEquals(_to_str(self.xss_post.comment.rendered), '<p>&lt;script&gt;alert(&#39;xss&#39;);&lt;/script&gt;</p>')
+        self.assertEquals(unicode(self.xss_post.comment.rendered), u'<p>&lt;script&gt;alert(&#39;xss&#39;);&lt;/script&gt;</p>')
 
     def test_escape_html_false(self):
         # both strings here are the xss_str, no escaping was done
         self.assertEquals(self.xss_post.body.raw, self.xss_str)
-        self.assertEquals(_to_str(self.xss_post.body.rendered), self.xss_str)
+        self.assertEquals(unicode(self.xss_post.body.rendered), self.xss_str)
 
     def test_inheritance(self):
         # test that concrete correctly got the added fields
@@ -104,7 +95,7 @@ class MarkupFieldTestCase(TestCase):
     def test_default_markup_types(self):
         from markupfield.markup import DEFAULT_MARKUP_TYPES
         for markup_type in DEFAULT_MARKUP_TYPES:
-            rendered = markup_type[1]('test')
+            rendered = markup_type[1](u'test')
             self.assertTrue(hasattr(rendered, '__str__'))
 
 class MarkupWidgetTests(TestCase):
@@ -119,12 +110,7 @@ class MarkupWidgetTests(TestCase):
                     markup_choices_field_markup_type='nomarkup')
         a.save()
         af = ArticleForm(instance=a)
-
-        # django >= 1.5 adds a newline
-        DJANGO_PRE_1_5 = '<textarea id="id_normal_field" rows="10" cols="40" name="normal_field">**normal**</textarea>'
-        DJANGO_1_5 = '<textarea id="id_normal_field" rows="10" cols="40" name="normal_field">\r\n**normal**</textarea>'
-        expected = DJANGO_PRE_1_5 if django.VERSION < (1, 5, 0) else DJANGO_1_5
-        self.assertEquals(_to_str(af['normal_field']), expected)
+        self.assertEquals(unicode(af['normal_field']), u'<textarea id="id_normal_field" rows="10" cols="40" name="normal_field">**normal**</textarea>')
 
     def test_no_markup_type_field_if_set(self):
         'ensure that a field with non-editable markup_type set does not have a _markup_type field'
