@@ -1,14 +1,14 @@
-==================
+=========================
 django-markitup-field
-==================
+=========================
 
 An implementation of a custom MarkupField for Django.  A MarkupField is in
 essence a TextField with an associated markup format and `MarkItUp!`_ markup
 editor widget with AJAX preview.  The field also caches its rendered value on
 the assumption that disk space is cheaper than CPU cycles in a web application.
 
-Based on `django-markupfield <https://github.com/jamesturk/django-markupfield>`_
-and `django-markitup <https://github.com/carljm/django-markitup>`_.
+Based on `django-markupfield <http://github.com/jamesturk/django-markupfield>`_
+and `django-markitup <http://github.com/carljm/django-markitup>`_.
 
 .. _MarkItUp!: http://markitup.jaysalvat.com/
 
@@ -26,7 +26,7 @@ or get the `in-development version`_::
 
     pip install django-markitup-field==tip
 
-.. _in-development version: https://github.com/dimka665/django-markitup-field
+.. _in-development version: http://github.com/dimka665/django-markitup-field
 
 It is not necessary to add ``'markitup_field'`` to your ``INSTALLED_APPS``, it
 merely needs to be on your ``PYTHONPATH``.
@@ -129,7 +129,8 @@ not both.
     as untrusted and as such will be run through Django's ``escape`` filter.
 
 ``rendered_field_name``:
-    Name for field with rendered content. If it is set to None, then it named <field_name>_rendered
+    Name for field with rendered content. If it is set to None,
+    then it named <field_name>_rendered
 
 
 Examples

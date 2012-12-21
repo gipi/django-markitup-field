@@ -4,7 +4,7 @@ long_description = open('README.rst').read()
 
 setup(
     name='django-markitup-field',
-    version="1.2-dev",
+    version="1.2.2-dev",
     package_dir={'markitup_field': 'markitup_field'},
 #    packages=['markitup_field', 'markitup_field.tests'],
     packages=['markitup_field'],
