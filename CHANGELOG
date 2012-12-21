@@ -1,3 +1,7 @@
+1.2
+==================
+    - added MarkItUp! editor and preview
+
 1.1.0
 ==================
     - markup_choices can no longer be a dict (deprecated pre-1.0)

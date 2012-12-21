@@ -1,5 +1,7 @@
-include README.rst
-include LICENSE
-include CHANGELOG
 include AUTHORS.txt
+include CHANGELOG
+include LICENSE
 include MANIFEST.in
+include README.rst
+
+graft markitup_field
