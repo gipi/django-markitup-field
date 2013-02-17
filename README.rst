@@ -29,10 +29,11 @@ or get the `in-development version`_::
 .. _in-development version: http://github.com/dimka665/django-markitup-field
 
 It is not necessary to add ``'markitup_field'`` to your ``INSTALLED_APPS``, it
-merely needs to be on your ``PYTHONPATH``.
+merely needs to be on your ``PYTHONPATH`` but without it ``collectstatic``
+command will not collect the file in the right place.
 
 If you want to use AJAX-based preview, add
-``url(r'^markitup/', include('markitup.urls'))`` in your root URLconf.
+``url(r'^markitup/', include('markitup_field.urls'))`` in your root URLconf.
 
 Requirements
 ------------
