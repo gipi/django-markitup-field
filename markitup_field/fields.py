@@ -117,6 +117,7 @@ class MarkupField(models.TextField):
 #        self.markup_choices_dict = dict(markup_choices)
 
         # default_markup_format in markup_choices ?
+        # FIXME: name is None as default and error will be misleading!
         if (self.default_markup_format and (self.default_markup_format not in self.markup_choices_list)):
             raise ValueError("Invalid 'default_markup_format' for field '{}', allowed values: {}".format(name, ', '.join(self.markup_choices_list)))
 
@@ -197,7 +198,10 @@ try:
     # always True, which means no_rendered_field arg will always be
     # True in a frozen MarkupField, which is what we want.
     add_introspection_rules(rules=[
-        ( (MarkupField,), [], { 'rendered_field': ['rendered_field', {}], })
+        ( (MarkupField,), [], {
+            'rendered_field': ['rendered_field', {}],
+            'default_markup_format': ['default_markup_format', {}],
+        })
     ], patterns=['markitup_field\.fields\.MarkupField'])
 except ImportError:
     pass
