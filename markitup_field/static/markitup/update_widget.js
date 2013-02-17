@@ -42,6 +42,8 @@ function setup_markitup_editor() {
 function get_format_from_markup_id(markup_select_id) {
     var markup_format_selector = '#' + markup_select_id + MARKUP_FORMAT_POSTFIX;
     var markup_format = $(markup_format_selector).val();
+
+	return 'restructuredtext';
     return markup_format;
 }
 
