@@ -136,8 +136,8 @@ class MarkupWidget(MarkupTextarea):
         #        html += html_script
 
         html_script = """<script>
-        var STATIC_URL = '{}';
-        var MARKITUP_PREVIEW_URL = '{}';
+        var STATIC_URL = '{0}';
+        var MARKITUP_PREVIEW_URL = '{1}';
         </script>
         """.format(settings.STATIC_URL, reverse('markitup_preview'))
         html += html_script
